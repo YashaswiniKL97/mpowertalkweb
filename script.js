@@ -303,89 +303,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================================================
    MPOWERTALK — SECTION 02
-
-   HERO
-      ↓
-   FULL WORKSHOP VIDEO
-      ↓
-   ONE WORD AT A TIME
-      ↓
-   ABOUT MPOWER TALK
-
-   Clean sequential word reveal
+   FIXED MIC + SCROLL VIDEO + STORY WORDS
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     const section =
-        document.getElementById("about");
+        document.getElementById("voiceStory");
 
-    const stage =
-        document.getElementById("mp2Stage");
-
-    const track =
-        section?.querySelector(".mp2-track");
-
-    const videoWrap =
-        document.getElementById("mp2VideoWrap");
+    const sticky =
+        section?.querySelector(
+            ".voice-story-sticky"
+        );
 
     const video =
-        document.getElementById("mp2Video");
-
-    const wordField =
-        document.getElementById("mp2WordField");
-
-    const people =
-        document.querySelector(
-            ".mp2-word-people"
-        );
-
-    const ideas =
-        document.querySelector(
-            ".mp2-word-ideas"
-        );
-
-    const conversations =
-        document.querySelector(
-            ".mp2-word-conversations"
-        );
-
-    const inspiration =
-        document.querySelector(
-            ".mp2-word-inspiration"
-        );
-
-    const aboutLabel =
         document.getElementById(
-            "mp2AboutLabel"
+            "voiceStoryVideo"
         );
 
-    const copy =
-        document.getElementById(
-            "mp2Copy"
+    const intro =
+        section?.querySelector(
+            ".voice-intro"
         );
 
-    const scrollNote =
-        document.querySelector(
-            ".mp2-scroll-note"
+    const overlay =
+        section?.querySelector(
+            ".voice-story-overlay"
+        );
+
+    const word1 =
+        section?.querySelector(
+            ".voice-word-1"
+        );
+
+    const word2 =
+        section?.querySelector(
+            ".voice-word-2"
+        );
+
+    const word3 =
+        section?.querySelector(
+            ".voice-word-3"
+        );
+
+    const word4 =
+        section?.querySelector(
+            ".voice-word-4"
+        );
+
+    const final =
+        section?.querySelector(
+            ".voice-final"
         );
 
 
     /* =====================================================
-       SAFETY
+       CHECK
     ===================================================== */
 
     if (
         !section ||
-        !stage ||
-        !track ||
-        !videoWrap ||
+        !sticky ||
         !video ||
-        !wordField
+        !intro ||
+        !overlay ||
+        !word1 ||
+        !word2 ||
+        !word3 ||
+        !word4 ||
+        !final
     ) {
 
-        return;
+        console.warn(
+            "Section 02 elements missing."
+        );
 
+        return;
     }
 
 
@@ -393,598 +386,822 @@ document.addEventListener("DOMContentLoaded", () => {
        HELPERS
     ===================================================== */
 
-    const clamp = (
+    function clamp(
         value,
         min = 0,
         max = 1
-    ) => {
+    ) {
 
-        return Math.max(
-            min,
-            Math.min(
-                max,
-                value
-            )
+        return Math.min(
+            Math.max(value, min),
+            max
         );
+    }
 
-    };
 
+    function ease(value) {
 
-    const ease = value => {
-
-        const x =
-            clamp(value);
+        value = clamp(value);
 
         return (
-            x *
-            x *
-            (3 - 2 * x)
+            value *
+            value *
+            (3 - 2 * value)
         );
-
-    };
+    }
 
 
     /* =====================================================
-       SCROLL PROGRESS
+       SECTION PROGRESS
     ===================================================== */
 
     function getProgress() {
 
-  const rect =
-    section.getBoundingClientRect();
+        const rect =
+            section.getBoundingClientRect();
 
-  const sectionTop =
-    rect.top;
+        const total =
+            section.offsetHeight -
+            window.innerHeight;
 
-  const scrollDistance =
-    section.offsetHeight -
-    window.innerHeight;
+        if (total <= 0) {
+            return 0;
+        }
 
-
-  if (scrollDistance <= 0) {
-    return 0;
-  }
-
-
-  const progress =
-    -sectionTop /
-    scrollDistance;
+        return clamp(
+            -rect.top / total
+        );
+    }
 
 
-  return clamp(
+    /* =====================================================
+       INTRO
+    ===================================================== */
+
+    function updateIntro(progress) {
+
+    let opacity = 1;
+    let y = 0;
+
+
+    /* ================================================
+       HEADING — DIRECTLY VISIBLE
+       No waiting / no blank screen
+    ================================================ */
+
+    if (progress <= 0.08) {
+
+        opacity = 1;
+        y = 0;
+    }
+
+
+    /* ================================================
+       HEADING → VIDEO TRANSITION
+    ================================================ */
+
+    else if (progress <= 0.16) {
+
+        const p =
+            clamp(
+                (progress - 0.08) /
+                0.08
+            );
+
+        const e =
+            ease(p);
+
+        opacity =
+            1 - e;
+
+        y =
+            -18 * e;
+    }
+
+
+    /* ================================================
+       HIDDEN
+    ================================================ */
+
+    else {
+
+        opacity = 0;
+        y = -18;
+    }
+
+
+    intro.style.opacity =
+        opacity;
+
+    intro.style.transform =
+        `
+        translate(-50%, -50%)
+        translateY(${y}px)
+        `;
+}
+
+    /* =====================================================
+       VIDEO FADE
+    ===================================================== */
+
+    /* =====================================================
+   VIDEO
+   FIXED BACKGROUND
+===================================================== */
+
+function updateVideo(progress) {
+
+    let opacity = 0;
+
+
+    /* ================================================
+       1. HEADING FIRST
+    ================================================ */
+
+    if (progress < 0.08) {
+
+        opacity = 0;
+    }
+
+
+    /* ================================================
+       2. VIDEO FADE IN
+    ================================================ */
+
+    else if (progress < 0.16) {
+
+        const p =
+            clamp(
+                (progress - 0.08) /
+                0.08
+            );
+
+        opacity =
+            ease(p);
+    }
+
+
+    /* ================================================
+       3. VIDEO CONTINUES
+    ================================================ */
+
+    else {
+
+        opacity = 1;
+    }
+
+
+    video.style.opacity =
+        opacity;
+
+
+    /* ================================================
+       NORMAL VIDEO
+       KEEP WHOLE VIDEO FIXED
+    ================================================ */
+
+    if (progress < 0.84) {
+
+        video.style.transform =
+            `
+            translate3d(0, 0, 0)
+            scale(1.015)
+            `;
+
+        video.style.objectPosition =
+            "50% 50%";
+    }
+
+
+    /* ================================================
+       FINAL STAGE
+       ONLY MIC / VIDEO CONTENT MOVES
+       VIDEO BOX DOES NOT MOVE
+    ================================================ */
+
+    else {
+
+        const finalProgress =
+            ease(
+                clamp(
+                    (progress - 0.84) /
+                    0.16
+                )
+            );
+
+
+        if (window.innerWidth <= 820) {
+
+            /*
+               IMPORTANT:
+               NO translateX HERE.
+
+               Whole video stays fixed.
+               Only the visible subject inside
+               the video shifts toward RIGHT.
+            */
+
+            video.style.transform =
+                `
+                translate3d(0, 0, 0)
+                scale(
+                    ${1.015 + (0.075 * finalProgress)}
+                )
+                `;
+
+
+            /*
+               Lower X position moves the
+               microphone toward RIGHT
+               without moving the video box.
+            */
+
+            const objectX =
+                50 -
+                (22 * finalProgress);
+
+
+            video.style.objectPosition =
+                `${objectX}% 50%`;
+        }
+
+
+        else {
+
+            /* DESKTOP — KEEP CENTERED */
+
+            video.style.transform =
+                `
+                translate3d(0, 0, 0)
+                scale(1.015)
+                `;
+
+            video.style.objectPosition =
+                "50% 50%";
+        }
+    }
+
+
+    /* ================================================
+       OVERLAY
+    ================================================ */
+
+    overlay.style.opacity =
+        progress >= 0.16
+            ? 0.08
+            : 0;
+}
+
+    /* =====================================================
+       STORY WORD ANIMATION
+    ===================================================== */
+
+    function animateWord(
+        element,
+        progress,
+        start,
+        end,
+        direction
+    ) {
+
+        const total =
+            end - start;
+
+        let opacity = 0;
+        let movement = 0;
+
+
+        /* BEFORE */
+
+        if (progress < start) {
+
+            opacity = 0;
+
+            movement =
+                direction === "left"
+                    ? -80
+                    : direction === "right"
+                        ? 80
+                        : 35;
+        }
+
+
+        /* ACTIVE */
+
+        else if (
+            progress >= start &&
+            progress <= end
+        ) {
+
+            const p =
+                clamp(
+                    (progress - start) /
+                    total
+                );
+
+
+            /*
+               25% ENTER
+               50% HOLD
+               25% EXIT
+            */
+
+            if (p < 0.25) {
+
+                const enter =
+                    ease(
+                        p / 0.25
+                    );
+
+                opacity =
+                    enter;
+
+                movement =
+                    direction === "left"
+                        ? -80 + (80 * enter)
+                        : direction === "right"
+                            ? 80 - (80 * enter)
+                            : 35 - (35 * enter);
+            }
+
+            else if (p < 0.75) {
+
+                opacity = 1;
+                movement = 0;
+            }
+
+            else {
+
+                const exit =
+                    ease(
+                        (p - 0.75) /
+                        0.25
+                    );
+
+                opacity =
+                    1 - exit;
+
+                movement =
+                    direction === "left"
+                        ? -35 * exit
+                        : direction === "right"
+                            ? 35 * exit
+                            : -20 * exit;
+            }
+        }
+
+
+        /* AFTER */
+
+        else {
+
+            opacity = 0;
+
+            movement =
+                direction === "left"
+                    ? -35
+                    : direction === "right"
+                        ? 35
+                        : -20;
+        }
+
+
+        element.style.opacity =
+            opacity;
+
+
+        if (
+            direction === "center"
+        ) {
+
+            element.style.transform =
+                `
+                translate(-50%, -50%)
+                translateY(${movement}px)
+                `;
+
+        }
+
+        else {
+
+            element.style.transform =
+                `translateX(${movement}px)`;
+        }
+    }
+
+
+    /* =====================================================
+       FINAL ABOUT MPOWERTALK
+    ===================================================== */
+
+    /* =====================================================
+   FINAL ABOUT MPOWERTALK
+   FADE ONLY
+===================================================== */
+
+function updateFinal(progress) {
+
+    let opacity = 0;
+
+
+    /*
+       Final starts after
+       Story 04.
+    */
+
+    if (progress >= 0.84) {
+
+        const p =
+            clamp(
+                (progress - 0.84) /
+                0.16
+            );
+
+        opacity =
+            ease(p);
+    }
+
+    else {
+
+        opacity = 0;
+    }
+
+
+    /*
+       IMPORTANT:
+
+       No translateX.
+       No movement.
+
+       About content stays
+       exactly in the same place.
+    */
+
+    final.style.opacity =
+        opacity;
+
+    final.style.transform =
+        "translate3d(0, 0, 0)";
+}
+
+   /* =====================================================
+   SCROLL-SCRUB VIDEO
+   FIXED + RELIABLE
+===================================================== */
+
+let videoDuration = 0;
+
+let targetTime = 0;
+
+let currentTime = 0;
+
+
+/* =====================================================
+   READ VIDEO DURATION
+===================================================== */
+
+function readVideoDuration() {
+
+    if (
+        Number.isFinite(video.duration) &&
+        video.duration > 0
+    ) {
+
+        videoDuration =
+            video.duration;
+
+
+        /*
+           Immediately sync the video
+           with the current scroll position.
+        */
+
+        const progress =
+            getProgress();
+
+        updateVideoTarget(
+            progress
+        );
+
+
+        /*
+           Force first valid frame.
+        */
+
+        if (
+            video.readyState >= 2 &&
+            Number.isFinite(targetTime)
+        ) {
+
+            try {
+
+                video.currentTime =
+                    targetTime;
+
+                currentTime =
+                    targetTime;
+
+            } catch (error) {
+
+                console.warn(
+                    "Video seek waiting for browser."
+                );
+            }
+        }
+    }
+}
+
+
+/* =====================================================
+   VIDEO READY EVENTS
+===================================================== */
+
+video.addEventListener(
+    "loadedmetadata",
+    readVideoDuration
+);
+
+
+video.addEventListener(
+    "durationchange",
+    readVideoDuration
+);
+
+
+video.addEventListener(
+    "loadeddata",
+    readVideoDuration
+);
+
+
+video.addEventListener(
+    "canplay",
+    readVideoDuration
+);
+
+
+/* =====================================================
+   SCROLL → VIDEO TIME
+===================================================== */
+
+function updateVideoTarget(
     progress
-  );
+) {
 
+    /*
+       If video duration is not
+       available yet, wait.
+    */
+
+    if (
+        !videoDuration ||
+        !Number.isFinite(videoDuration)
+    ) {
+
+        return;
+    }
+
+
+    /*
+       VIDEO TIMELINE
+
+       0.00
+          ↓
+       Intro
+
+       0.08
+          ↓
+       Video starts
+
+       0.84
+          ↓
+       Video reaches last frame
+
+       0.84 → 1
+          ↓
+       Hold final frame
+    */
+
+  const videoProgress =
+    clamp(
+        (progress - 0.08) /
+        0.76
+    );
+
+
+    targetTime =
+        videoProgress *
+        Math.max(
+            0,
+            videoDuration - 0.05
+        );
+}
+
+
+/* =====================================================
+   SMOOTH VIDEO SCRUB
+===================================================== */
+
+function smoothVideoSeek() {
+
+    /*
+       Move current time toward
+       scroll target smoothly.
+    */
+
+    const difference =
+        targetTime -
+        currentTime;
+
+
+    currentTime +=
+        difference * 0.22;
+
+
+    /*
+       Snap when very close.
+    */
+
+    if (
+        Math.abs(difference) <
+        0.003
+    ) {
+
+        currentTime =
+            targetTime;
+    }
+
+
+    /*
+       Only seek when video has
+       enough data.
+    */
+
+    if (
+        video.readyState >= 2 &&
+        Number.isFinite(currentTime)
+    ) {
+
+        try {
+
+            /*
+               IMPORTANT:
+
+               Video is intentionally PAUSED.
+
+               Scroll controls currentTime.
+            */
+
+            if (!video.paused) {
+
+                video.pause();
+            }
+
+
+            video.currentTime =
+                currentTime;
+
+        }
+
+        catch (error) {
+
+            /*
+               Browser can temporarily
+               reject a seek.
+            */
+        }
+    }
+
+
+    requestAnimationFrame(
+        smoothVideoSeek
+    );
 }
 
 
     /* =====================================================
-       VIDEO CONTROL
+       MAIN UPDATE
     ===================================================== */
 
-    let videoPlaying = false;
+    let ticking = false;
 
 
-    function playWorkshop() {
+    function update() {
 
-        if (
-            videoPlaying ||
-            !video
-        ) {
-
-            return;
-
-        }
-
-
-        videoPlaying = true;
-
-        video.muted = true;
-
-        video.play().catch(() => {
-
-            videoPlaying = false;
-
-        });
-
-    }
-
-
-    function pauseWorkshop() {
-
-        if (!video) {
-
-            return;
-
-        }
-
-        video.pause();
-
-        videoPlaying = false;
-
-    }
-
-
-    /* =====================================================
-       VIDEO LOOP
-    ===================================================== */
-
-    video.addEventListener(
-        "ended",
-        () => {
-
-            video.currentTime = 0;
-
-            video.play().catch(() => {});
-
-        }
-    );
-
-
-    /* =====================================================
-       WORD CONFIGURATION
-
-       Each word gets its own moment.
-
-       PEOPLE
-       30% → 42%
-
-       IDEAS
-       44% → 56%
-
-       CONVERSATIONS
-       58% → 70%
-
-       INSPIRATION
-       72% → 84%
-    ===================================================== */
-
-    const words = [
-
-    {
-        element: people,
-        start: 0.26,
-        end: 0.40,
-        x: -115,
-        y: -18
-    },
-
-    {
-        element: ideas,
-        start: 0.41,
-        end: 0.55,
-        x: 115,
-        y: -4
-    },
-
-    {
-        element: conversations,
-        start: 0.56,
-        end: 0.70,
-        x: -115,
-        y: 12
-    },
-
-    {
-        element: inspiration,
-        start: 0.71,
-        end: 0.84,
-        x: 115,
-        y: 28
-    }
-
-];
-
-
-    /* =====================================================
-       WORD ANIMATION
-    ===================================================== */
-
-    function renderWord(
-        item,
-        progress
-    ) {
-
-        if (!item.element) {
-
-            return;
-
-        }
-
-
-        const el =
-            item.element;
-
-
-        /*
-           Before word starts
-        */
-
-        if (
-            progress <
-            item.start
-        ) {
-
-            el.style.opacity = "0";
-
-            el.style.transform =
-                `
-                translate3d(
-                    calc(-50% + ${item.x}vw),
-                    calc(-50% + ${item.y}vh),
-                    0
-                )
-                scale(.94)
-                `;
-
-            return;
-
-        }
-
-
-        /*
-           AFTER word finishes
-        */
-
-        if (
-            progress >
-            item.end
-        ) {
-
-            el.style.opacity = "0";
-
-            el.style.transform =
-                `
-                translate3d(
-                    -50%,
-                    calc(-50% + ${item.y}vh),
-                    0
-                )
-                scale(.98)
-                `;
-
-            return;
-
-        }
-
-
-        /*
-           Local progress
-        */
-
-        const local =
-            clamp(
-                (
-                    progress -
-                    item.start
-                ) /
-                (
-                    item.end -
-                    item.start
-                )
-            );
-
-
-        /*
-           Fade in
-           0 → 25%
-        */
-
-        const fadeIn =
-            ease(
-                clamp(
-                    local / .25
-                )
-            );
-
-
-        /*
-           Fade out
-           75% → 100%
-        */
-
-        const fadeOut =
-            1 -
-            ease(
-                clamp(
-                    (local - .75) /
-                    .25
-                )
-            );
-
-
-        const opacity =
-            Math.min(
-                fadeIn,
-                fadeOut
-            );
-
-
-        /*
-           Movement
-
-           Starts from left/right
-           slowly settles into center
-        */
-
-        const movement =
-            ease(local);
-
-
-        const x =
-            item.x *
-            (1 - movement);
-
-
-        /*
-           Small vertical rise
-
-           This keeps every word
-           on a different level.
-        */
-
-        const y =
-            item.y -
-            (
-                movement *
-                2
-            );
-
-
-        const scale =
-            .94 +
-            movement *
-            .06;
-
-
-        el.style.opacity =
-            String(opacity);
-
-
-        el.style.transform =
-            `
-            translate3d(
-                calc(-50% + ${x}vw),
-                calc(-50% + ${y}vh),
-                0
-            )
-            scale(${scale})
-            `;
-
-    }
-
-
-    /* =====================================================
-       MAIN RENDER
-    ===================================================== */
-
-    let raf = 0;
-
-
-    function render() {
-
-        raf = 0;
-
-
-        const p =
+        const progress =
             getProgress();
 
 
-        /* =================================================
-           01 — VIDEO
-        ================================================= */
+        /*
+           INTRO
+        */
 
-       const videoIn =
-    ease(
-        clamp(
-            p / .06
-        )
-    );
-
-const videoOut =
-    ease(
-        clamp(
-            (p - .84) /
-            .12
-        )
-    );
-
-
-        videoWrap.style.opacity =
-            String(
-                videoIn *
-                (1 - videoOut)
-            );
-
-
-        videoWrap.style.transform =
-            `
-            scale(
-                ${1.015 +
-                videoOut * .035}
-            )
-            `;
-
-
-        /* =================================================
-           VIDEO PLAY
-        ================================================= */
-
-        if (
-            p > .01 &&
-            p < .90
-        ) {
-
-            playWorkshop();
-
-        } else {
-
-            pauseWorkshop();
-
-        }
-
-
-        /* =================================================
-           02 — WORD FIELD
-        ================================================= */
-
-        const wordIn =
-            ease(
-                clamp(
-                    (p - .25) /
-                    .06
-                )
-            );
-
-
-        const wordOut =
-            1 -
-            ease(
-                clamp(
-                    (p - .87) /
-                    .06
-                )
-            );
-
-
-        wordField.style.opacity =
-            String(
-                wordIn *
-                wordOut
-            );
-
-
-        /* =================================================
-           ONE WORD AT A TIME
-        ================================================= */
-
-        words.forEach(
-            item => {
-
-                renderWord(
-                    item,
-                    p
-                );
-
-            }
+        updateIntro(
+            progress
         );
 
 
-        /* =================================================
-           03 — ABOUT
-        ================================================= */
+        /*
+           VIDEO + MIC
+        */
 
-        const aboutProgress =
-            ease(
-                clamp(
-                    (p - .88) /
-                    .12
-                )
-            );
-
-
-        if (aboutLabel) {
-
-            aboutLabel.style.opacity =
-                String(
-                    aboutProgress
-                );
-
-
-            aboutLabel.style.transform =
-                `
-                translate3d(
-                    0,
-                    ${45 -
-                    aboutProgress *
-                    45}px,
-                    0
-                )
-                scale(
-                    ${.94 +
-                    aboutProgress *
-                    .06}
-                )
-                `;
-
-        }
-
-
-        /* =================================================
-           ABOUT COPY
-        ================================================= */
-
-        if (copy) {
-
-            copy.style.opacity =
-                String(
-                    aboutProgress
-                );
-
-
-            copy.style.transform =
-                `
-                translate3d(
-                    0,
-                    ${50 -
-                    aboutProgress *
-                    50}px,
-                    0
-                )
-                `;
-
-        }
-
-
-        /* =================================================
-           SCROLL INDICATOR
-        ================================================= */
-
-        if (scrollNote) {
-
-            scrollNote.style.opacity =
-                String(
-                    Math.max(
-                        0,
-                        1 -
-                        p * 5
-                    )
-                );
-
-        }
-
-
-        /* =================================================
-           VIDEO STATE
-        ================================================= */
-
-        stage.classList.toggle(
-            "is-video",
-            p >= .01 &&
-            p < .90
+        updateVideo(
+            progress
         );
 
+
+        /*
+           VIDEO SCRUB
+        */
+
+        updateVideoTarget(
+            progress
+        );
+
+
+        /*
+           STORY 01
+           LEFT
+        */
+
+        animateWord(
+            word1,
+            progress,
+            0.18,
+            0.34,
+            "left"
+        );
+
+
+        /*
+           STORY 02
+           RIGHT
+        */
+
+        animateWord(
+            word2,
+            progress,
+            0.35,
+            0.51,
+            "right"
+        );
+
+
+        /*
+           STORY 03
+           LEFT
+        */
+
+        animateWord(
+            word3,
+            progress,
+            0.52,
+            0.68,
+            "left"
+        );
+
+
+        /*
+           STORY 04
+           CENTER
+        */
+
+        animateWord(
+            word4,
+            progress,
+            0.69,
+            0.84,
+            "center"
+        );
+
+
+        /*
+           FINAL ABOUT
+        */
+
+        updateFinal(
+            progress
+        );
+
+
+        ticking = false;
     }
 
 
     /* =====================================================
-       REQUEST RENDER
+       REQUEST UPDATE
     ===================================================== */
 
-    function requestRender() {
+    function requestUpdate() {
 
-        if (raf) {
+        if (!ticking) {
 
-            return;
-
-        }
-
-
-        raf =
             requestAnimationFrame(
-                render
+                update
             );
 
+            ticking = true;
+        }
     }
 
 
@@ -994,23 +1211,16 @@ const videoOut =
 
     window.addEventListener(
         "scroll",
-        requestRender,
+        requestUpdate,
         {
             passive: true
         }
     );
 
 
-    /* =====================================================
-       RESIZE
-    ===================================================== */
-
     window.addEventListener(
         "resize",
-        requestRender,
-        {
-            passive: true
-        }
+        requestUpdate
     );
 
 
@@ -1018,11 +1228,12 @@ const videoOut =
        INITIAL
     ===================================================== */
 
-    requestAnimationFrame(
-        render
-    );
+    update();
+
+    smoothVideoSeek();
 
 });
+
 /* =====================================================
    SECTION 03 — WHY MPOWER TALK
    MICROPHONE + WORD STORY
@@ -1245,21 +1456,21 @@ micVideo.pause();
            INTRO
         ================================================= */
 
-        const introIn =
-            ease(
-                clamp(
-                    p / .12
-                )
-            );
+       const introIn =
+    ease(
+        clamp(
+            p / .04
+        )
+    );
 
 
-        const introOut =
-            ease(
-                clamp(
-                    (p - .68) /
-                    .12
-                )
-            );
+const introOut =
+    ease(
+        clamp(
+            (p - .13) /
+            .10
+        )
+    );
 
 
         intro.style.opacity =
@@ -1283,13 +1494,13 @@ micVideo.pause();
            WORD BOARD
         ================================================= */
 
-        const boardIn =
-            ease(
-                clamp(
-                    (p - .05) /
-                    .10
-                )
-            );
+       const boardIn =
+    ease(
+        clamp(
+            (p - .22) /
+            .10
+        )
+    );
 
 
         const boardOut =
@@ -1335,23 +1546,23 @@ micVideo.pause();
         ================================================= */
 
         const timings = [
-            {
-                start: .12,
-                end: .27
-            },
-            {
-                start: .30,
-                end: .45
-            },
-            {
-                start: .48,
-                end: .65
-            },
-            {
-                start: .68,
-                end: .82
-            }
-        ];
+    {
+        start: .28,
+        end: .40
+    },
+    {
+        start: .43,
+        end: .55
+    },
+    {
+        start: .58,
+        end: .70
+    },
+    {
+        start: .73,
+        end: .84
+    }
+];
 
 
         rows.forEach(
@@ -1443,11 +1654,11 @@ micVideo.pause();
            MICROPHONE
         ================================================= */
 
-        const micStart =
-            .08;
+       const micStart =
+    .16;
 
-        const micEnd =
-            .88;
+const micEnd =
+    .90;
 
 
         const micProgress =
@@ -1467,32 +1678,32 @@ micVideo.pause();
           Enter from RIGHT.
         */
 
-        const micIn =
-            ease(
-                clamp(
-                    (
-                        p -
-                        .06
-                    ) /
-                    .10
-                )
-            );
+       const micIn =
+    ease(
+        clamp(
+            (
+                p -
+                .14
+            ) /
+            .12
+        )
+    );
 
 
         /*
           Exit near the end.
         */
 
-        const micOut =
-            ease(
-                clamp(
-                    (
-                        p -
-                        .82
-                    ) /
-                    .10
-                )
-            );
+      const micOut =
+    ease(
+        clamp(
+            (
+                p -
+                .88
+            ) /
+            .08
+        )
+    );
 
 
         const micOpacity =

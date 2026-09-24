@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="style.css">
 
     <link rel="stylesheet" href="sections.css">
+
 </head>
 
 <body>
@@ -272,25 +273,25 @@
 
     <div class="mp-founder-container">
 
-        <!-- ================================
-             LEFT — 60% STORY
-        ================================= -->
-
         <div class="mp-founder-content">
 
-           <h1 class="mp-founder-title">
+            <div class="mp-founder-eyebrow">
+                THE FOUNDER
+            </div>
 
-    <span class="founder-word word-1">THE</span>
+            <h1 class="mp-founder-title">
 
-    <span class="founder-word word-2">PERSON</span>
+                <span class="founder-word word-1">THE</span>
 
-    <span class="founder-word word-3">BEHIND</span>
+                <span class="founder-word word-2">VOICE</span>
 
-    <span class="founder-word word-4">THE</span>
+                <span class="founder-word word-3">BEHIND</span>
 
-    <span class="founder-word word-5">CONVERSATIONS</span>
+                <span class="founder-word word-4">MPOWER</span>
 
-</h1>
+                <span class="founder-word word-5">TALK</span>
+
+            </h1>
 
 
             <div class="mp-founder-name founder-text">
@@ -327,10 +328,6 @@
         </div>
 
 
-        <!-- ================================
-             RIGHT — 40% FOUNDER IMAGE
-        ================================= -->
-
         <div class="mp-founder-image-wrap">
 
             <div class="mp-founder-image">
@@ -340,6 +337,8 @@
                     alt="Kishore Rachaiah, Founder of mPOWER TALK"
                 >
 
+                <div class="mp-founder-image-overlay"></div>
+
             </div>
 
         </div>
@@ -348,148 +347,173 @@
 
 </section>
 
-<!-- =====================================================
+<!-- =========================================================
      MPOWERTALK — SECTION 02
-     KISHORE RACHAIAH → MPOWERTALK
-===================================================== -->
+     VOICE STORY
+========================================================= -->
 
-<!-- =====================================================
-     MPOWERTALK — SECTION 02
-     KISHORE RACHAIAH → WORKSHOP → IDEAS → ABOUT
-===================================================== -->
+<section class="voice-story" id="voiceStory">
 
-<section class="mp2-about" id="about">
+    <div class="voice-story-sticky">
 
-    <div class="mp2-track">
+        <!-- =================================================
+             INTRO
+        ================================================== -->
 
-        <div class="mp2-stage" id="mp2Stage">
+        <div class="voice-intro">
+
+            <h2>
+                Every conversation
+                <span>begins with a voice.</span>
+            </h2>
+
+        </div>
 
 
-            <!-- =================================================
-                 WORKSHOP VIDEO
-            ================================================== -->
+        <!-- =================================================
+             MICROPHONE VIDEO
+        ================================================== -->
 
-            <!-- =================================================
-     FULL SCREEN WORKSHOP VIDEO
-================================================= -->
+        <video
+            id="voiceStoryVideo"
+            class="voice-story-video"
+            src="assets/mpower-mic-explore.mp4"
+            preload="auto"
+            muted
+            playsinline
+            webkit-playsinline
+            aria-label="mPowerTalk microphone"
+        ></video>
 
-<div
-    class="mp2-video-wrap"
-    id="mp2VideoWrap"
->
 
-    <video
-        class="mp2-video"
-        id="mp2Video"
-        muted
-        autoplay
-        playsinline
-        preload="auto"
-    >
+        <!-- =================================================
+             LIGHT OVERLAY
+        ================================================== -->
 
-        <source
-            src="assets/videos/workshop.mp4"
-            type="video/mp4"
+        <div class="voice-story-overlay"></div>
+
+
+        <!-- =================================================
+             STORY 01
+             LEFT
+        ================================================== -->
+
+        <div
+            class="voice-word voice-word-1"
+            data-direction="left"
         >
 
-    </video>
+            <h3>
+                Every voice has
+                <span>a story.</span>
+            </h3>
 
-    <div class="mp2-video-shade"></div>
+            <p>
+                Every person has something worth sharing.
+            </p>
 
-    <div class="mp2-video-label">
-        <span>MP / WORKSHOP</span>
-        <i></i>
-    </div>
-
-</div>
-
-
-            <!-- =================================================
-                 MOVING WORDS
-            ================================================== -->
-
-            <!-- =================================================
-     WORKSHOP WORD STORY
-================================================= -->
-
-<div
-    class="mp2-word-field"
-    id="mp2WordField"
->
-
-    <span
-        class="mp2-word mp2-word-people"
-    >
-        PEOPLE
-    </span>
-
-    <span
-        class="mp2-word mp2-word-ideas"
-    >
-        IDEAS
-    </span>
-
-    <span
-        class="mp2-word mp2-word-conversations"
-    >
-        CONVERSATIONS
-    </span>
-
-    <span
-        class="mp2-word mp2-word-inspiration"
-    >
-        INSPIRATION
-    </span>
-
-</div>
+        </div>
 
 
-            <!-- =================================================
-                 ABOUT
-            ================================================== -->
+        <!-- =================================================
+             STORY 02
+             RIGHT
+        ================================================== -->
 
-            <div
-                class="mp2-about-label"
-                id="mp2AboutLabel"
-            >
+        <div
+            class="voice-word voice-word-2"
+            data-direction="right"
+        >
 
-                <span class="mp2-eyebrow">
-                    WHAT WE ARE
+            <h3>
+                Ideas become
+                <span>conversations.</span>
+            </h3>
+
+            <p>
+                A simple idea can start a meaningful conversation.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             STORY 03
+             LEFT
+        ================================================== -->
+
+        <div
+            class="voice-word voice-word-3"
+            data-direction="left"
+        >
+
+            <h3>
+                We listen.
+                <span>We connect.</span>
+            </h3>
+
+            <p>
+                Different voices bring different perspectives.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             STORY 04
+             CENTER
+        ================================================== -->
+
+        <div
+            class="voice-word voice-word-4"
+            data-direction="center"
+        >
+
+            <h3>
+                Conversations
+                <span>create change.</span>
+            </h3>
+
+            <p>
+                Conversations can turn ideas into action.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             FINAL
+             ABOUT MPOWERTALK
+        ================================================== -->
+
+        <div class="voice-final">
+
+            <div class="voice-final-content">
+
+                <span class="voice-final-label">
+                    ABOUT MPOWERTALK
                 </span>
 
                 <h2>
-                    ABOUT
-                    <span>MPOWER TALK</span>
+                    Conversations
+                    <span>that matter.</span>
                 </h2>
 
-            </div>
-
-
-            <div
-                class="mp2-copy"
-                id="mp2Copy"
-            >
-
-                <p class="mp2-copy-lead">
-                    A space where people meet,
-                    ideas collide, and conversations
-                    create perspective.
+                <p>
+                    mPowerTalk is a space where people,
+                    ideas and experiences come together
+                    through meaningful conversations.
                 </p>
 
-                <p class="mp2-copy-body">
-                    mPOWER TALK brings people together
-                    through meaningful conversations,
-                    shared experiences and fresh ideas.
-                    It is not just about listening.
-                    It is about thinking differently.
-                </p>
-
-              <div class="mp2-line"></div>
+                <a
+                    href="#about"
+                    class="voice-final-link"
+                >
+                    DISCOVER MPOWERTALK
+                    <span>↗</span>
+                </a>
 
             </div>
-
-            <!-- Scroll indicator removed -->
-
 
         </div>
 
@@ -2828,5 +2852,8 @@
 
 <script src="script.js"></script>
 
+<script src="section02.js"></script>
+
+<script src="voice-section.js"></script>
 </body>
 </html>
